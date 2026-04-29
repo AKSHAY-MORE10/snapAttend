@@ -72,9 +72,10 @@ def style_base_layout():
             font-family: 'Outfit', sans-serif;    
         }
 
-        /* ✅ TEXT INPUT STYLE */
+
         .stTextInput input {
-            color: black !important;
+            color: white !important;
+                opacity: 0.8 !important;
             # background-color: white !important;
                 # border-radius: 0.5rem !important;
                 # # padding: 0.5rem 1rem !important;

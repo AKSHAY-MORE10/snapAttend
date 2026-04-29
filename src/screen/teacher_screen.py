@@ -10,8 +10,8 @@ def teacher_screen():
     style_base_layout()
 
     #  Input styling (black text + placeholder)
-    # st.markdown("""
-    # <style>
+    st.markdown("""
+    <style>
     # .stTextInput input {
     #     color: black !important;
     #     background-color: white !important;
@@ -20,7 +20,7 @@ def teacher_screen():
     #     color: black !important;
     #     opacity: 1;
     # }
-    # </style>
+    </style>
     # """, unsafe_allow_html=True)
 
     # Default page
@@ -166,7 +166,7 @@ def teacher_dashboard():
         st.session_state["teacher_page"] = "login"
         st.rerun()
 
-    st.success(f"Welcome {teacher['name']}")
+    st.header(f"Welcome {teacher['name']}")
 
     if st.button("Logout", key="logout_btn", icon=":material/logout:"):
         st.session_state.clear()
