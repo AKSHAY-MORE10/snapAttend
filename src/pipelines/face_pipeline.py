@@ -106,21 +106,21 @@ def train_classifier():
 def predict_attendance(image_np, threshold=0.6):
     model_data = get_trained_model()
 
-    if model_data is None:
-        st.warning("Model not trained.")
-        return {}
-
     embeddings = get_face_embeddings(image_np)
+    num_faces = len(embeddings)
 
-    if len(embeddings) == 0:
-        st.warning("No faces detected.")
-        return {}
+    if model_data is None:
+        return {}, [], num_faces
+
+    if num_faces == 0:
+        return {}, [], 0
 
     clf = model_data["model"]
     known_embeddings = model_data["embeddings"]
     labels = model_data["labels"]
 
     detected_students = {}
+    all_ids = []
 
     for encoding in embeddings:
 
@@ -132,6 +132,8 @@ def predict_attendance(image_np, threshold=0.6):
 
         else:
             predicted_id = clf.predict([encoding])[0]
+
+        all_ids.append(int(predicted_id))
 
         # ---------------------
         # Distance Verification (IMPORTANT)
@@ -149,4 +151,4 @@ def predict_attendance(image_np, threshold=0.6):
         if best_distance <= threshold:
             detected_students[int(predicted_id)] = True
 
-    return detected_students
+    return detected_students, all_ids, num_faces

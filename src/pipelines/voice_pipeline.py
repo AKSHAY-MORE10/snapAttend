@@ -2,7 +2,14 @@ import numpy as np
 import io
 import librosa
 import streamlit as st
-from resemblyzer import VoiceEncoder, preprocess_wav
+
+try:
+    from resemblyzer import VoiceEncoder, preprocess_wav
+except ModuleNotFoundError:
+    VoiceEncoder = None
+
+    def preprocess_wav(audio):
+        return audio
 
 
 # -----------------------------
@@ -10,6 +17,8 @@ from resemblyzer import VoiceEncoder, preprocess_wav
 # -----------------------------
 @st.cache_resource
 def load_voice_encoder():
+    if VoiceEncoder is None:
+        raise ModuleNotFoundError("resemblyzer is not installed in the active Python environment")
     return VoiceEncoder()
 
 
@@ -39,6 +48,9 @@ def get_voice_embedding(audio_bytes):
 
         return normalize(embedding)
 
+    except ModuleNotFoundError:
+        st.warning("Voice recognition is unavailable because resemblyzer is not installed")
+        return None
     except Exception:
         st.error("Voice recognition error")
         return None
