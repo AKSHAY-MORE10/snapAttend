@@ -62,7 +62,12 @@ def create_subject(subject_code, name, section, teacher_id):
         "section": section,
         "teacher_id": teacher_id
     }
-    return supabase.table("subjects").insert(data).execute().data
+    response = supabase.table("subjects").insert(data).execute()
+
+    if not response.data:
+        raise RuntimeError("Supabase returned no inserted subject data")
+
+    return response.data
 
 
 def get_teacher_subjects(teacher_id):

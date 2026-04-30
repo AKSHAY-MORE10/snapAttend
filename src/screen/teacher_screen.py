@@ -193,7 +193,13 @@ def teacher_tab_manage_subjects():
 
     with col2:
         if st.button('Create New Subject', width='stretch'):
-            create_subject_dialog(teacher_id)
+            st.session_state.show_create_subject_form = True
+
+    if 'show_create_subject_form' not in st.session_state:
+        st.session_state.show_create_subject_form = False
+
+    if st.session_state.show_create_subject_form:
+        create_subject_dialog(teacher_id)
 
     subjects = get_teacher_subjects(teacher_id)
 
