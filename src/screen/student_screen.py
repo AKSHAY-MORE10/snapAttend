@@ -40,8 +40,17 @@ def student_dashboard():
     with c1:
         st.header('Your Enrolled Subjects')
     with c2:
-        if st.button('Enroll in Subject', type='primary', width='stretch'):
-            enroll_dialog()
+        join_code = st.query_params.get('join-code')
+        if join_code and not st.session_state.get('enroll_dialog_shown'):
+            st.session_state.enroll_dialog_shown = True
+            enroll_dialog(join_code)
+        elif st.button('Enroll in Subject', type='primary', width='stretch'):
+            # Check if there's a join code in query params
+            join_code = st.query_params.get('join-code')
+            if join_code:
+                enroll_dialog(join_code)
+            else:
+                enroll_dialog()
 
 
     st.divider()
@@ -50,6 +59,7 @@ def student_dashboard():
     with st.spinner('Loading your enrolled subjects..'):
         subjects = get_student_subjects(student_id)
         logs = get_student_attendance(student_id)
+
 
     stats_map = {}
 

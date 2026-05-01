@@ -101,7 +101,6 @@ def teacher_tab_take_attendance():
     subject_options = {f"{s['name']} - {s['subject_code']}": s['subject_id'] for s in subjects}
 
     col1, col2 = st.columns([3, 1], vertical_alignment='bottom')
-
     with col1:
         selected_subject_label = st.selectbox('Select Subject', options=list(subject_options.keys()))
 
@@ -122,12 +121,11 @@ def teacher_tab_take_attendance():
 
     has_photos = bool(st.session_state.attendance_images)
     c1, c2, c3 = st.columns(3)
-
     with c1:
         if st.button('Clear all photos', width='stretch', type='tertiary', icon=':material/delete:', disabled=not has_photos):
             st.session_state.attendance_images = []
             st.rerun()
-
+            
     with c2:
         if st.button('Run Face Analysis', width='stretch', type='secondary', icon=':material/analytics:', disabled=not has_photos):
             with st.spinner('Deep scanning classroom photos...'):
