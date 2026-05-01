@@ -47,7 +47,7 @@ def style_base_layout():
 
         # #MainMenu, footer, header {
         #     visibility: hidden;
-        # }
+        }
 
         .block-container {
             padding-top:1.5rem !important;    
@@ -73,19 +73,27 @@ def style_base_layout():
         }
 
 
-        .stTextInput input {
-            color: white !important;
-                opacity: 0.8 !important;
-            # background-color: white !important;
-                # border-radius: 0.5rem !important;
-                # # padding: 0.5rem 1rem !important;
-                border: 1px solid #ccc !important;
-                # transition: border-color 0.25s ease-in-out !important;
+        .stApp .stTextInput input,
+        .stApp .stTextArea textarea {
+            color: var(--text-color) !important;
+            opacity: 0.95 !important;
+            border: 1px solid #ccc !important;
         }
 
-        .stTextInput input::placeholder {
-            color: white !important;
-            opacity: 0.7 !important;
+        .stApp .stTextInput input::placeholder,
+        .stApp .stTextArea textarea::placeholder,
+        .stApp input::placeholder,
+        .stApp textarea::placeholder {
+            color: var(--text-color) !important;
+            opacity: 0.45 !important;
+        }
+
+        .stApp .stTextInput input::-webkit-input-placeholder,
+        .stApp .stTextArea textarea::-webkit-input-placeholder,
+        .stApp input::-webkit-input-placeholder,
+        .stApp textarea::-webkit-input-placeholder {
+            color: var(--text-color) !important;
+            opacity: 0.55 !important;
         }
 
         /* OPTIONAL: label color */
@@ -95,7 +103,7 @@ def style_base_layout():
 
         /* Buttons */
         button[kind="primary"]{
-            color: black !important;
+            color: white !important;
         }
 
         button{
@@ -125,6 +133,12 @@ def style_base_layout():
 
         button:hover{
             transform: scale(1.05);
+        }
+
+        hr {
+            background-color: #878787 !important;
+            border: none !important;
+            height: 1px !important;
         }
 
         </style>

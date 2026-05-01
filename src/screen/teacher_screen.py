@@ -7,6 +7,7 @@ from src.components.subject_card import subject_card
 from src.database.db import (
     check_teacher_exists,
     create_teacher,
+    delete_subject,
     teacher_login,
     get_teacher_subjects,
     get_attendance_for_teacher,
@@ -210,9 +211,28 @@ def teacher_tab_manage_subjects():
 
             def make_share_btn(s):
                 def share_btn():
-                    if st.button(f"Share Code: {s['name']}", key=f"share_{s['subject_code']}", icon=":material/share:"):
-                        share_subject_dialog(s['name'], s['subject_code'])
-                    st.space()
+                    share_col, delete_col = st.columns(2)
+                    with share_col:
+                        if st.button(f"Share Code: {s['name']}", key=f"share_{s['subject_id']}", icon=":material/share:"):
+                            share_subject_dialog(s['name'], s['subject_code'])
+                    with delete_col:
+                        delete_key = f"delete_{s['subject_id']}"
+                        if st.button("Delete Subject", key=delete_key, type='secondary', icon=':material/delete:'):
+                            st.session_state[f"confirm_delete_subject_{s['subject_id']}"] = True
+
+                    if st.session_state.get(f"confirm_delete_subject_{s['subject_id']}"):
+                        st.warning(f"Delete {s['name']} and all its attendance records?")
+                        confirm_col, cancel_col = st.columns(2)
+                        with confirm_col:
+                            if st.button("Confirm Delete", key=f"confirm_delete_{s['subject_id']}", type='secondary'):
+                                delete_subject(s['subject_id'])
+                                st.session_state.pop(f"confirm_delete_subject_{s['subject_id']}", None)
+                                st.toast(f"Deleted {s['name']} successfully")
+                                st.rerun()
+                        with cancel_col:
+                            if st.button("Cancel", key=f"cancel_delete_{s['subject_id']}", type='tertiary'):
+                                st.session_state.pop(f"confirm_delete_subject_{s['subject_id']}", None)
+                                st.rerun()
                 return share_btn
 
             subject_card(

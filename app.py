@@ -5,7 +5,7 @@ from src.screen.home_screen import home_screen
 from src.screen.teacher_screen import teacher_screen
 from src.screen.student_screen import student_screen
 
-# from src.components.dialog_auto_enroll import auto_enroll_dialog
+from src.components.dialog_auto_enroll import auto_enroll_dialog
 
 def main():
     st.set_page_config(
@@ -26,11 +26,16 @@ def main():
             home_screen()
 
 
-    # join_code = st.query_params.get('join-code')
-    # if join_code:
-    #     if st.session_state.login_type != 'student':
-    #         st.session_state.login_type = 'student'
-    #         st.rerun()
-    #     if st.session_state.get('is_logged_in') and st.session_state.get('user_role') == 'student':
-    #         auto_enroll_dialog(join_code)
+    join_code = st.query_params.get('join-code')
+    if isinstance(join_code, list):
+        join_code = join_code[0] if join_code else None
+    if isinstance(join_code, str):
+        join_code = join_code.strip() or None
+
+    if join_code:
+        if st.session_state.login_type != 'student':
+            st.session_state.login_type = 'student'
+            st.rerun()
+        if st.session_state.get('is_logged_in') and st.session_state.get('user_role') == 'student':
+            auto_enroll_dialog(join_code)
 main()

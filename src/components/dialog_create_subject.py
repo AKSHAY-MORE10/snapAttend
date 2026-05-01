@@ -4,12 +4,12 @@ from src.database.db import create_subject
 def create_subject_dialog(teacher_id):
     """Inline create-subject form that stays visible until the user submits or cancels."""
 
-    st.subheader("Create New Subject")
+    # st.markdown("<h3 style=\"color: gray; font-family: 'sans-serif', 'Outfit', sans-serif; font-weight:800;\">Create New Subject</h3>", unsafe_allow_html=True)
 
     with st.form("create_subject_form"):
-        name = st.text_input("Subject name")
-        subject_code = st.text_input("Subject code")
-        section = st.text_input("Section")
+        name = st.text_input("Subject name", placeholder='E.g. Introduction to AI')
+        subject_code = st.text_input("Subject code", placeholder='E.g. AI101')
+        section = st.text_input("Section", placeholder='E.g. A / 2026')
 
         form_col1, form_col2 = st.columns(2)
         with form_col1:

@@ -8,13 +8,7 @@ from PIL import Image
 import numpy as np
 from src.pipelines.face_pipeline import predict_attendance, get_face_embeddings, train_classifier
 from src.pipelines.voice_pipeline import get_voice_embedding
-from src.database.db import (
-    get_all_students,
-    create_student,
-    get_student_subjects,
-    get_student_attendance,
-    unenroll_student_from_subject,
-)
+from src.database.db import get_all_students, create_student, get_student_subjects, get_student_attendance, unenroll_student_from_subject
 import time
 
 from src.components.dialog_enroll import enroll_dialog
@@ -40,17 +34,8 @@ def student_dashboard():
     with c1:
         st.header('Your Enrolled Subjects')
     with c2:
-        join_code = st.query_params.get('join-code')
-        if join_code and not st.session_state.get('enroll_dialog_shown'):
-            st.session_state.enroll_dialog_shown = True
-            enroll_dialog(join_code)
-        elif st.button('Enroll in Subject', type='primary', width='stretch'):
-            # Check if there's a join code in query params
-            join_code = st.query_params.get('join-code')
-            if join_code:
-                enroll_dialog(join_code)
-            else:
-                enroll_dialog()
+        if st.button('Enroll in Subject', type='primary', width='stretch'):
+            enroll_dialog()
 
 
     st.divider()
@@ -85,7 +70,7 @@ def student_dashboard():
         def unenroll_button():
                 if st.button("Unenroll from tihs course", type='tertiary', width='stretch', icon=':material/delete_forever:'):
                     unenroll_student_from_subject(student_id, sid)
-                    st.toast(f'Welcome Back {student_data["name"]}')
+                    st.toast(f'Unenrolled from {sub["name"]} successfully!')
                     st.rerun()
 
         with cols[i % 2]:
@@ -101,7 +86,6 @@ def student_dashboard():
                 footer_callback=unenroll_button
             )
     footer_dashboard()
-
 
 def student_screen():
 
@@ -149,7 +133,7 @@ def student_screen():
                         st.session_state.is_logged_in = True
                         st.session_state.user_role = 'student'
                         st.session_state.student_data = student
-                        st.toast(f'Welcome Back {student["name"]}!')
+                        st.toast(f'Welcome Back {student["name"]}')
                         time.sleep(1)
                         st.rerun()
                 else:
@@ -158,40 +142,35 @@ def student_screen():
     if show_registration:
         with st.container(border=True):
             st.header('Register new Profile')
-            new_name = st.text_input("Enter your name", placeholder='E.g. Akshay Kumar')
-            new_roll_number = st.text_input("Enter your roll number", placeholder='E.g. 23CS001')
+            new_name = st.text_input("Enter your name", placeholder='E.g. Akshay More')
 
-            st.subheader('Optional : Voice Enrollment')
-            st.info("Enroll your for voice only attendance")
-
+            st.markdown("<h4 style='color:gray; font-size:0.95rem; margin:0;'>Optional : Voice Enrollment</h4>", unsafe_allow_html=True)
+            st.markdown("<div style='color:gray; margin-top:0.25rem; margin-bottom:0.5rem;'>Enroll for voice-only attendance</div>", unsafe_allow_html=True)
+            roll_number = st.text_input("Enter your roll number", placeholder='E.g. 2026-001')
 
             audio_data = None
 
             try:
-                audio_data = st.audio_input('Record a short phrase like I am present, My name is Akash.')
+                st.markdown("<label style='color:gray; display:block; margin-bottom:0.25rem;'>Record a short phrase like 'I am present' or 'My name is Akshay'.</label>", unsafe_allow_html=True)
+                audio_data = st.audio_input('', key='voice_enroll_audio')
             except Exception:
                 st.error('Audio Data failed!')
 
             if st.button('Create Account', type='primary'):
-                if new_name and new_roll_number:
+                if not new_name or not roll_number:
+                    st.warning('Please enter your name and roll number!')
+                else:
                     with st.spinner('Creating profile..'):
-                        img = np.array(Image.open(photo_source))
-                        encodings= get_face_embeddings(img)
-                        if encodings: 
+                        img_np = np.array(Image.open(photo_source))
+                        encodings = get_face_embeddings(img_np)
+                        if encodings:
                             face_emb = encodings[0].tolist()
 
                             voice_emb = None
                             if audio_data:
                                 voice_emb = get_voice_embedding(audio_data.read())
-                                if voice_emb is not None:
-                                    voice_emb = voice_emb.tolist()
 
-                            response_data = create_student(
-                                new_name,
-                                new_roll_number,
-                                face_embedding=face_emb,
-                                voice_embedding=voice_emb,
-                            )
+                            response_data = create_student(new_name, roll_number, face_embedding=face_emb, voice_embedding=voice_emb)
 
                             if response_data:
                                 train_classifier()
@@ -203,9 +182,6 @@ def student_screen():
                                 st.rerun()
                         else:
                             st.error('Couldnt capture your facial features for registration')
-
-                else:
-                    st.warning('Please enter your name and roll number!')
 
 
         

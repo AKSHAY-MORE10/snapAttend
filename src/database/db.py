@@ -42,12 +42,20 @@ def get_all_students():
     return supabase.table("students").select("*").execute().data
 
 
+def _json_safe_embedding(embedding):
+    if embedding is None:
+        return None
+    if hasattr(embedding, "tolist"):
+        return embedding.tolist()
+    return embedding
+
+
 def create_student(name, roll_number, face_embedding=None, voice_embedding=None):
     data = {
         "name": name,
         "roll_number": roll_number,
-        "face_embedding": face_embedding,
-        "voice_embedding": voice_embedding
+        "face_embedding": _json_safe_embedding(face_embedding),
+        "voice_embedding": _json_safe_embedding(voice_embedding)
     }
     return supabase.table("students").insert(data).execute().data
 
@@ -68,6 +76,12 @@ def create_subject(subject_code, name, section, teacher_id):
         raise RuntimeError("Supabase returned no inserted subject data")
 
     return response.data
+
+
+def delete_subject(subject_id):
+    supabase.table("attendance").delete().eq("subject_id", subject_id).execute()
+    supabase.table("subject_students").delete().eq("subject_id", subject_id).execute()
+    return supabase.table("subjects").delete().eq("subject_id", subject_id).execute().data
 
 
 def get_teacher_subjects(teacher_id):
