@@ -41,6 +41,10 @@ def style_base_layout():
             --surface:      #2c2c2c;
             --border:       #3d3d3d;
         }
+        
+        #MainMenu, footer, header {
+             visibility: hidden;
+        }
 
         .block-container {
             padding-top: 1.5rem !important;
