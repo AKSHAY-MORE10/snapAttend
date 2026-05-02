@@ -186,53 +186,141 @@ def teacher_tab_take_attendance():
 
 def teacher_tab_manage_subjects():
     teacher_id = st.session_state.teacher_data.get('teacher_id')
+
+    # ── Section header row ──────────────────────────────────────────
     col1, col2 = st.columns(2)
     with col1:
         st.header('Manage Subjects')
-
     with col2:
-        if st.button('Create New Subject', width='stretch'):
+        st.markdown("<div style='display:flex; align-items:center; height:100%; padding-top:1rem;'>", unsafe_allow_html=True)
+        if st.button('＋  Create New Subject', use_container_width=True):
             st.session_state.show_create_subject_form = True
+        st.markdown("</div>", unsafe_allow_html=True)
 
+    # ── Inline dark-theme overrides for this tab ────────────────────
+    st.markdown("""
+        <style>
+        /* Warning / info banners */
+        .stAlert {
+            background-color: #2c2c2c !important;
+            color: #f0f0f0 !important;
+            border: 1px solid #3d3d3d !important;
+            border-radius: 0.75rem !important;
+        }
+
+        /* st.info box */
+        div[data-testid="stNotification"] {
+            background-color: #2c2c2c !important;
+            color: #c8c8c8 !important;
+            border-left: 4px solid #888888 !important;
+            border-radius: 0.5rem !important;
+        }
+
+        /* st.warning box */
+        div[data-testid="stNotification"][kind="warning"] {
+            border-left: 4px solid #e0a020 !important;
+        }
+
+        /* Dividers between cards */
+        hr {
+            border-color: #3d3d3d !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # ── Create subject form state guard ────────────────────────────
     if 'show_create_subject_form' not in st.session_state:
         st.session_state.show_create_subject_form = False
 
     if st.session_state.show_create_subject_form:
         create_subject_dialog(teacher_id)
 
+    # ── Subject list ────────────────────────────────────────────────
     subjects = get_teacher_subjects(teacher_id)
 
     if subjects:
         for sub in subjects:
             stats = [
                 ("🫂", "Students", sub.get('total_students', 0)),
-                ("🕰️", "Classes", sub.get('total_classes', 0)),
+                ("🕰️", "Classes",  sub.get('total_classes', 0)),
             ]
 
             def make_share_btn(s):
                 def share_btn():
+                    st.markdown("""
+                        <style>
+                        /* Action row styling */
+                        div[data-testid="stHorizontalBlock"] button {
+                            width: 100% !important;
+                        }
+                        </style>
+                    """, unsafe_allow_html=True)
+
                     share_col, delete_col = st.columns(2)
+
                     with share_col:
-                        if st.button(f"Share Code: {s['name']}", key=f"share_{s['subject_id']}", icon=":material/share:"):
+                        if st.button(
+                            f"Share Code: {s['name']}",
+                            key=f"share_{s['subject_id']}",
+                            icon=":material/share:",
+                            use_container_width=True
+                        ):
                             share_subject_dialog(s['name'], s['subject_code'])
+
                     with delete_col:
                         delete_key = f"delete_{s['subject_id']}"
-                        if st.button("Delete Subject", key=delete_key, type='secondary', icon=':material/delete:'):
+                        if st.button(
+                            "Delete Subject",
+                            key=delete_key,
+                            type='secondary',
+                            icon=':material/delete:',
+                            use_container_width=True
+                        ):
                             st.session_state[f"confirm_delete_subject_{s['subject_id']}"] = True
 
+                    # ── Confirm / cancel delete ─────────────────────
                     if st.session_state.get(f"confirm_delete_subject_{s['subject_id']}"):
-                        st.warning(f"Delete {s['name']} and all its attendance records?")
+                        st.markdown("""
+                            <div style="
+                                background-color: #2c2c2c;
+                                border: 1px solid #e0a020;
+                                border-left: 4px solid #e0a020;
+                                border-radius: 0.75rem;
+                                padding: 0.85rem 1rem;
+                                margin: 0.5rem 0;
+                                color: #f0e0a0;
+                                font-family: 'Outfit', sans-serif;
+                                font-size: 0.92rem;
+                            ">
+                                ⚠️ Delete <strong style="color:#ffffff;">{name}</strong>
+                                and all its attendance records?
+                            </div>
+                        """.format(name=s['name']), unsafe_allow_html=True)
+
                         confirm_col, cancel_col = st.columns(2)
+
                         with confirm_col:
-                            if st.button("Confirm Delete", key=f"confirm_delete_{s['subject_id']}", type='secondary'):
+                            if st.button(
+                                "✓  Confirm Delete",
+                                key=f"confirm_delete_{s['subject_id']}",
+                                type='secondary',
+                                use_container_width=True
+                            ):
                                 delete_subject(s['subject_id'])
                                 st.session_state.pop(f"confirm_delete_subject_{s['subject_id']}", None)
-                                st.toast(f"Deleted {s['name']} successfully")
+                                st.toast(f"✓ Deleted {s['name']} successfully")
                                 st.rerun()
+
                         with cancel_col:
-                            if st.button("Cancel", key=f"cancel_delete_{s['subject_id']}", type='tertiary'):
+                            if st.button(
+                                "✕  Cancel",
+                                key=f"cancel_delete_{s['subject_id']}",
+                                type='tertiary',
+                                use_container_width=True
+                            ):
                                 st.session_state.pop(f"confirm_delete_subject_{s['subject_id']}", None)
                                 st.rerun()
+
                 return share_btn
 
             subject_card(
@@ -242,10 +330,28 @@ def teacher_tab_manage_subjects():
                 stats=stats,
                 footer_callback=make_share_btn(sub)
             )
+
     else:
-        st.info("NO SUBJECTS FOUND. CREATE ONE ABOVE")
-
-
+        # ── Empty state ─────────────────────────────────────────────
+        st.markdown("""
+            <div style="
+                background-color: #2c2c2c;
+                border: 1px dashed #555555;
+                border-radius: 1rem;
+                padding: 2.5rem 1rem;
+                text-align: center;
+                margin-top: 1rem;
+            ">
+                <span style="font-size:2rem;">📭</span>
+                <p style="
+                    color: #9a9a9a;
+                    font-family: 'Outfit', sans-serif;
+                    font-size: 1rem;
+                    margin-top: 0.5rem;
+                    letter-spacing: 0.04em;
+                ">No subjects found. Create one above.</p>
+            </div>
+        """, unsafe_allow_html=True)
 def teacher_tab_attendance_records():
     st.header('Attendance Records')
 
