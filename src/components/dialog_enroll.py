@@ -22,6 +22,8 @@ def enroll_dialog():
                     st.warning('You are already enrolled in this program')
                 else:
                     enroll_student_to_subject(student_id, subject['subject_id'])
+                    from src.pipelines.face_pipeline import train_classifier
+                    train_classifier(subject['subject_id'])
                     st.success('Succesfully enrolled!')
                     time.sleep(1)
                     st.rerun()

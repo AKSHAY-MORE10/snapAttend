@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────────
+# docker-compose.yml  —  SnapClass full stack
+# ─────────────────────────────────────────────────────────────────
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snapclass_api
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=https://ugwiwlqxvvjfqdkaawve.supabase.co
+      - SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnd2l3bHF4dnZqZnFka2Fhd3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNTM5OTUsImV4cCI6MjA5MjkyOTk5NX0.NgrwsCIgfjEA8lwSVvq-BG3e18ZJ9i4JrFerlF97vvc
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    container_name: snapclass_ui
+    ports:
+      - "8501:8501"
+    environment:
+      - SUPABASE_URL=https://ugwiwlqxvvjfqdkaawve.supabase.co
+      - SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnd2l3bHF4dnZqZnFka2Fhd3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNTM5OTUsImV4cCI6MjA5MjkyOTk5NX0.NgrwsCIgfjEA8lwSVvq-BG3e18ZJ9i4JrFerlF97vvc
+    depends_on:
+      - api
+    restart: unless-stopped                                     

@@ -1,0 +1,49 @@
+# .github/workflows/deploy.yml
+#
+# Auto-deploys to your EC2/GCP server on every push to main.
+#
+# Required GitHub Secrets (Settings → Secrets → Actions):
+#   SSH_HOST        — your server's public IP
+#   SSH_USER        — e.g. ubuntu
+#   SSH_PRIVATE_KEY — contents of your .pem key file
+#   SUPABASE_URL    — your Supabase project URL
+#   SUPABASE_KEY    — your Supabase anon/service key
+
+name: Deploy SnapClass
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host:        ${{ secrets.SSH_HOST }}
+          username:    ${{ secrets.SSH_USER }}
+          key:         ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/${{ secrets.SSH_USER }}/snapclass
+
+            # Pull latest code
+            git pull origin main
+
+            # Write env file from secrets
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+            # Rebuild and restart containers (zero-downtime for unchanged services)
+            docker compose pull
+            docker compose up --build -d
+
+            # Clean up old images
+            docker image prune -f
+
+            echo "Deployment complete."
