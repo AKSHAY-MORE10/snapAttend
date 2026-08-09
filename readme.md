@@ -234,8 +234,6 @@ docker compose down
     │   └── student_screen.py       # Student portal UI
     ├── components/                 # Reusable UI components
     └── ui/                         # Base layout helpers
-```
-
 ---
 
 ## Database Schema (Supabase)
@@ -341,3 +339,6 @@ Make sure `src/services/__init__.py` exists (empty file).
 ## License
 
 MIT License — see `LICENSE` file.
+
+
+<!-- streamlit run app.py --server.port 8501 -->

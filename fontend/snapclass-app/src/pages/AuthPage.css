@@ -1,0 +1,68 @@
+/* ─── AuthPage layout ────────────────────────────────────────── */
+/* Shared by TeacherLogin.jsx and StudentLogin.jsx              */
+
+.auth-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.auth-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+  animation: fadeSlideUp 0.35s ease both;
+}
+
+/* Wide card variant — used by StudentLogin (webcam + form side-by-side on larger screens) */
+.auth-card--wide {
+  max-width: 860px;
+}
+
+.auth-card__title {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-family: var(--font-display);
+  margin-bottom: var(--space-xs);
+  text-align: center;
+}
+
+.auth-card__sub {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+/* Two-column layout inside wide auth card */
+.auth-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+@media (max-width: 680px) {
+  .auth-cols {
+    grid-template-columns: 1fr;
+  }
+  .auth-card--wide {
+    max-width: 100%;
+  }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
