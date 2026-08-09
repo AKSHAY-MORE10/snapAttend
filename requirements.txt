@@ -1,6 +1,11 @@
 # requirements.txt — pinned versions for reproducible builds
 
-# UI
+# API server
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+
+# UI (Streamlit kept for reference — React app is the new frontend)
 streamlit==1.45.0
 
 # Utilities
