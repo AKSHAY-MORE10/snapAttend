@@ -523,6 +523,30 @@ select.form-input {
   border-bottom-color: var(--color-accent);
 }
 
+/* ─── Card Grid ─────────────────────────────────────────────── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* ─── Loading State ──────────────────────────────────────────── */
+.loading-state {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-lg);
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* ─── Tabs (alias for tab-bar) ───────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0;
+  flex-wrap: wrap;
+}
+
 /* ─── Empty State ────────────────────────────────────────────── */
 .empty-state {
   background-color: var(--color-surface);
