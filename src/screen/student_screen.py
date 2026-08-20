@@ -188,7 +188,11 @@ def student_screen():
                     "Record a short phrase like 'I am present' or 'My name is Akshay'.</label>",
                     unsafe_allow_html=True,
                 )
-                audio_data = st.audio_input("", key="voice_enroll_audio")
+                audio_data = st.audio_input(
+                    "Record voice sample",
+                    label_visibility="collapsed",
+                    key="voice_enroll_audio",
+                )
             except Exception:
                 st.error("Audio input failed!")
 
