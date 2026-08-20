@@ -6,9 +6,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
-env/
-.streamlit/
-*.pyc
+.streamlit/secrets.toml
 
 dist/
 build/
