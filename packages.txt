@@ -1,4 +1,0 @@
-libgomp1
-libsndfile1
-build-essential
-cmake
