@@ -6,7 +6,7 @@ uvicorn[standard]==0.30.6
 python-multipart==0.0.9
 
 # UI (Streamlit kept for reference — React app is the new frontend)
-streamlit==1.45.0
+streamlit==1.57.0
 
 # Utilities
 numpy==1.26.4
