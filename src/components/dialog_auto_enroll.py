@@ -34,7 +34,7 @@ def auto_enroll_dialog(subject_code):
             st.query_params.clear()
             st.rerun()
     with col2:
-        if st.button('Yes enroll now!', type='primary', width='stretch'):
+        if st.button('Yes enroll now!', type='primary', use_container_width=True):
             enroll_student_to_subject(student_id, subject['subject_id'])
             from src.pipelines.face_pipeline import train_classifier
             train_classifier(subject['subject_id'])

@@ -130,14 +130,12 @@ def student_screen():
     with c1:
         header_dashboard()
     with c2:
-        if st.button("Go back to Home", type="secondary", key="loginbackbtn",
-                     shortcut="control+backspace"):
+        if st.button("Go back to Home", type="secondary", key="loginbackbtn"):
             st.session_state["login_type"] = None
             st.rerun()
 
     st.markdown("<h2 style='text-align: center;'>Login using FaceID</h2>", unsafe_allow_html=True)
-    st.space()
-    st.space()
+    st.write("")
 
     show_registration = False
     photo_source = st.camera_input("Position your face in the center")
@@ -244,13 +242,13 @@ def student_dashboard():
             del st.session_state.student_data
             st.rerun()
 
-    st.space()
+    st.write("")
 
     c1, c2 = st.columns(2)
     with c1:
         st.header("Your Enrolled Subjects")
     with c2:
-        if st.button("Enroll in Subject", type="primary", width="stretch"):
+        if st.button("Enroll in Subject", type="primary", use_container_width=True):
             enroll_dialog()
 
     st.divider()
@@ -278,7 +276,7 @@ def student_dashboard():
         def make_unenroll(s, s_id):
             def unenroll_button():
                 if st.button("Unenroll from this course", type="tertiary",
-                             width="stretch", icon=":material/delete_forever:"):
+                             use_container_width=True, icon=":material/delete_forever:"):
                     unenroll_student_from_subject(student_id, s_id)
                     st.toast(f"Unenrolled from {s['name']} successfully!")
                     st.rerun()
