@@ -81,7 +81,7 @@ def teacher_dashboard():
             st.rerun()
     with tab3:
         t = "primary" if st.session_state.current_teacher_tab == "attendance_records" else "tertiary"
-        if st.button("Attendance Records", type=t, use_container_width=True, icon=":material/cards_stack:"):
+        if st.button("Attendance Records", type=t, use_container_width=True, icon=":material/table_chart:"):
             st.session_state.current_teacher_tab = "attendance_records"
             st.rerun()
 
