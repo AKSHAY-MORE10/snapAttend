@@ -9,6 +9,7 @@ Changes from original:
 """
 
 import time
+# pyrefly: ignore [missing-import]
 import streamlit as st
 import numpy as np
 from PIL import Image
@@ -134,7 +135,7 @@ def student_screen():
             st.session_state["login_type"] = None
             st.rerun()
 
-    st.header("Login using FaceID", text_alignment="center")
+    st.markdown("<h2 style='text-align: center;'>Login using FaceID</h2>", unsafe_allow_html=True)
     st.space()
     st.space()
 

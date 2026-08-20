@@ -5,6 +5,7 @@ All business logic removed — delegated to src/services/attendance_service.py
 This file only handles UI: reading inputs, showing results, triggering actions.
 """
 
+# pyrefly: ignore [missing-import]
 import streamlit as st
 import pandas as pd
 
@@ -350,7 +351,7 @@ def teacher_screen_login():
             st.session_state["login_type"] = None
             st.rerun()
 
-    st.header("Login using password", text_alignment="center")
+    st.markdown("<h2 style='text-align: center;'>Login using password</h2>", unsafe_allow_html=True)
     st.space()
     st.space()
 
