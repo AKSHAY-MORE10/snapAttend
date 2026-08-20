@@ -150,7 +150,7 @@ class TeacherRegisterRequest(BaseModel):
 
 
 class CreateSubjectRequest(BaseModel):
-    teacher_id:   int
+    teacher_id:   str
     name:         str
     subject_code: str
     section:      str
@@ -354,7 +354,7 @@ async def api_student_register(
     tags=["Subjects"],
     summary="Get all subjects for a teacher",
 )
-def api_get_teacher_subjects(teacher_id: int):
+def api_get_teacher_subjects(teacher_id: str):
     subjects = get_teacher_subjects(teacher_id)
     return {"teacher_id": teacher_id, "subjects": subjects}
 
@@ -591,6 +591,6 @@ def save_attendance_route(payload: SaveRequest):
     tags=["Teachers"],
     summary="Get all attendance records for a teacher's subjects",
 )
-def teacher_attendance(teacher_id: int):
+def teacher_attendance(teacher_id: str):
     records = get_attendance_summary(teacher_id)
     return {"teacher_id": teacher_id, "records": records}

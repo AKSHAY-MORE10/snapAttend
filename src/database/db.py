@@ -10,6 +10,7 @@ Changes from original:
 """
 
 from src.database.config import supabase
+# pyrefly: ignore [missing-import]
 import bcrypt
 
 
@@ -94,7 +95,7 @@ def create_student(name: str, roll_number: str, face_embedding=None, voice_embed
 # SUBJECTS
 # =========================
 
-def create_subject(subject_code: str, name: str, section: str, teacher_id: int):
+def create_subject(subject_code: str, name: str, section: str, teacher_id: str):
     data = {
         "subject_code": subject_code,
         "name": name,
@@ -114,7 +115,7 @@ def delete_subject(subject_id: int):
     return supabase.table("subjects").delete().eq("subject_id", subject_id).execute().data
 
 
-def get_teacher_subjects(teacher_id: int) -> list[dict]:
+def get_teacher_subjects(teacher_id: str) -> list[dict]:
     res = (
         supabase.table("subjects")
         .select("*, subject_students(count), attendance(timestamp)")
@@ -183,7 +184,7 @@ def get_student_attendance(student_id: int) -> list[dict]:
     )
 
 
-def get_attendance_for_teacher(teacher_id: int) -> list[dict]:
+def get_attendance_for_teacher(teacher_id: str) -> list[dict]:
     return (
         supabase.table("attendance")
         .select("*, subjects!inner(*)")

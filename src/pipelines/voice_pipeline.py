@@ -1,9 +1,12 @@
 import numpy as np
 import io
+import logging
+# pyrefly: ignore [missing-import]
 import librosa
-import streamlit as st
+from functools import lru_cache
 
 try:
+    # pyrefly: ignore [missing-import]
     from resemblyzer import VoiceEncoder, preprocess_wav
 except ModuleNotFoundError:
     VoiceEncoder = None
@@ -15,11 +18,18 @@ except ModuleNotFoundError:
 # -----------------------------
 # Load Encoder (Cached)
 # -----------------------------
-@st.cache_resource
+logger = logging.getLogger(__name__)
+
+_voice_encoder = None
+
 def load_voice_encoder():
+    global _voice_encoder
+    if _voice_encoder is not None:
+        return _voice_encoder
     if VoiceEncoder is None:
         raise ModuleNotFoundError("resemblyzer is not installed in the active Python environment")
-    return VoiceEncoder()
+    _voice_encoder = VoiceEncoder()
+    return _voice_encoder
 
 
 # -----------------------------
@@ -40,7 +50,7 @@ def get_voice_embedding(audio_bytes):
         audio, sr = librosa.load(io.BytesIO(audio_bytes), sr=16000)
 
         if len(audio) < sr * 0.5:
-            st.warning("Audio too short")
+            logger.warning("Audio too short")
             return None
 
         wav = preprocess_wav(audio)
@@ -49,10 +59,10 @@ def get_voice_embedding(audio_bytes):
         return normalize(embedding)
 
     except ModuleNotFoundError:
-        st.warning("Voice recognition is unavailable because resemblyzer is not installed")
+        logger.warning("Voice recognition is unavailable because resemblyzer is not installed")
         return None
     except Exception:
-        st.error("Voice recognition error")
+        logger.error("Voice recognition error", exc_info=True)
         return None
 
 
@@ -126,5 +136,5 @@ def process_bulk_audio(audio_bytes, candidates_dict, threshold=0.65):
         return identified_results
 
     except Exception:
-        st.error("Bulk processing error")
+        logger.error("Bulk processing error", exc_info=True)
         return {}
