@@ -2,6 +2,10 @@
 import numpy as np
 if not hasattr(np, 'bool'):
     np.bool = bool
+if not hasattr(np, 'int'):
+    np.int = int
+if not hasattr(np, 'float'):
+    np.float = float
 
 # pyrefly: ignore [missing-import]
 import streamlit as st
