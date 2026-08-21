@@ -25,6 +25,7 @@ from src.pipelines.voice_pipeline import get_voice_embedding
 from src.database.db import (
     get_all_students,
     create_student,
+    DuplicateRollNumberError,
     get_student_subjects,
     get_student_attendance,
     unenroll_student_from_subject,
@@ -211,11 +212,17 @@ def student_screen():
                             if audio_data:
                                 voice_emb = get_voice_embedding(audio_data.read())
 
-                            response_data = create_student(
-                                new_name, roll_number,
-                                face_embedding=face_emb,
-                                voice_embedding=voice_emb,
-                            )
+                            response_data = None
+                            try:
+                                response_data = create_student(
+                                    new_name, roll_number,
+                                    face_embedding=face_emb,
+                                    voice_embedding=voice_emb,
+                                )
+                            except DuplicateRollNumberError:
+                                st.error("This roll number is already registered. Please use a different one.")
+                            except Exception as e:
+                                st.error(f"Failed to create profile: {e}")
 
                             if response_data:
                                 # ── Correct retrain: rebuild global login model only ──

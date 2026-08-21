@@ -81,6 +81,11 @@ def _json_safe_embedding(embedding):
     return embedding
 
 
+class DuplicateRollNumberError(Exception):
+    """Raised when a student roll number already exists in the database."""
+    pass
+
+
 def create_student(name: str, roll_number: str, face_embedding=None, voice_embedding=None):
     data = {
         "name": name,
@@ -88,7 +93,19 @@ def create_student(name: str, roll_number: str, face_embedding=None, voice_embed
         "face_embedding": _json_safe_embedding(face_embedding),
         "voice_embedding": _json_safe_embedding(voice_embedding),
     }
-    return supabase.table("students").insert(data).execute().data
+    try:
+        return supabase.table("students").insert(data).execute().data
+    except Exception as e:
+        error_code = getattr(e, "code", None)
+        error_msg = str(e)
+        if (
+            error_code == "23505"
+            or "23505" in error_msg
+            or "students_roll_number_key" in error_msg
+            or "duplicate key" in error_msg.lower()
+        ):
+            raise DuplicateRollNumberError("This roll number is already registered.") from e
+        raise
 
 
 # =========================
